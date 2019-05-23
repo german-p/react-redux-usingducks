@@ -1,0 +1,19 @@
+{
+  "name": "react-redux-usingducks",
+  "version": "1.0.0",
+  "description": "A small function to create redux ducks",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "react",
+    "redux",
+    "ducks"
+  ],
+  "author": "German Paniagua <ggpaniagua@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^6.1.4"
+  }
+}
