@@ -14,6 +14,7 @@
   "author": "German Paniagua <ggpaniagua@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "chai": "^4.2.0",
     "mocha": "^6.1.4"
   }
 }

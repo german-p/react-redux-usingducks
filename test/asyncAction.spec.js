@@ -1,4 +1,4 @@
-const { success, failure } = require('../lib/asyncAction');
+const { success, failure } = require('../src/asyncAction');
 const assert = require('assert');
 
 describe('asyncAction helpers', ()=> {
