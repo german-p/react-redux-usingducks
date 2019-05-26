@@ -2,8 +2,11 @@
 function appendSuffix(action, suffix, error) {
   if (typeof action === 'string')
     return `${action}_${suffix}`;
-  if (Reflect.has(action, 'type'))
-    return { ...action, type: `${action.type}_${suffix}`, error: error && { stack: error.stack, message: error.message } };
+  if (Reflect.has(action, 'type')) {
+    const a = { ...action, type: `${action.type}_${suffix}` };
+    if(error) a.error = { stack: error.stack, message: error.message };
+    return a;
+  }
   return action;
 }
 /**
