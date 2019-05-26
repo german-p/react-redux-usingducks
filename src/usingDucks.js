@@ -1,15 +1,27 @@
+const { success, failure } = require('./asyncAction');
 
-function usingDucks(initialState) {
+function usingDucks(name, initialState = {}) {
+  if(!name) throw new Error('Please provide a name for the duck');
   const config = {};
-
+  /**
+   * Creates an action creator and register the reducers that will handle the action.
+   * @param {string} type The action type constant
+   * @param {object} options The object with the optional parameters
+   * @param {function} options.reducer The reducer function that will be executed when this action is dispatched.
+   * @param {function} options.successReducer The reducer function when this is an async action and the call succeeds (does not fail)
+   * (state, payload)=> state
+   * @param {function} options.failureReducer The reducer function when this is an asyuc action and the call throws an exception.
+   * (state, payload, error)=> state
+  */
   function newActionCreator(type, options) {
     if(!type) throw new Error('The type parameter is required');
 
     if(options) {
-      const { reducer } = options;
+      const { reducer, successReducer, failureReducer } = options;
       reduce(type, reducer);
+      reduce(success(type), successReducer);
+      reduce(failure(type), failureReducer);
     }
-
     return (payload)=> ({ type, payload });
   }
 
@@ -25,7 +37,10 @@ function usingDucks(initialState) {
   }
 
 
-
+  /**
+   * Creates the main reducer function for the actions of the duck
+   * @returns the reducer function (state, action)=> state;
+   */
   function createReducer() {
     return (state = initialState, action)=> {
       if (action && action.type && config[action.type]) {
