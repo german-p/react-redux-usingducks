@@ -4,7 +4,7 @@
   "description": "A small function to create redux ducks",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "mocha"
   },
   "keywords": [
     "react",
