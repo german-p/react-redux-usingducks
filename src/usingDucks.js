@@ -1,7 +1,6 @@
 const { success, failure } = require('./asyncAction');
 
-function usingDucks(name, initialState = {}) {
-  if(!name) throw new Error('Please provide a name for the duck');
+function usingDucks(initialState = {}) {
   const config = {};
   let _initialState = initialState;
   /**

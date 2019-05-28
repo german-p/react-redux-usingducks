@@ -7,26 +7,20 @@ const { success, failure } = require('../src/asyncAction');
 describe('when usingDucks', ()=> {
   
   it('should return an object with the newActionCreator', ()=> {
-    const { newActionCreator } = usingDucks('test');
+    const { newActionCreator } = usingDucks();
     should.exist(newActionCreator);
     newActionCreator.should.be.a('function');
   });
 
   it('should return an object with the createReducer function', ()=> {
-    const { createReducer } = usingDucks('test');
+    const { createReducer } = usingDucks();
     should.exist(createReducer);
     createReducer.should.be.a('function');
   });
 
-  it('should require the duck name', ()=> {
-    function usingDucksCall() { usingDucks() };
-
-    usingDucksCall.should.throw(Error, 'Please provide a name for the duck');
-  });
-
   describe('newActionCreator', ()=> {
     it('should return the actionCreator function', ()=> {
-      const actionCreator = usingDucks('test').newActionCreator({ type: 'LOGIN' });
+      const actionCreator = usingDucks().newActionCreator({ type: 'LOGIN' });
       
       should.exist(actionCreator);
       actionCreator.should.be.a('function');
@@ -34,33 +28,33 @@ describe('when usingDucks', ()=> {
 
     describe('the action creator function returned by newActionCreator', ()=> {
       it('should fail if no action definition object is provided', ()=> {
-        const { newActionCreator } = usingDucks('test');
+        const { newActionCreator } = usingDucks();
         function newActionCreatorCall() { {newActionCreator()}; }     
       
         newActionCreatorCall.should.throw(Error, 'The action definition parameter is required');
       });
       it('should fail if the action definition object does not provide a value', ()=> {
-        const { newActionCreator } = usingDucks('test');
+        const { newActionCreator } = usingDucks();
         function newActionCreatorCall() { {newActionCreator({ })}; }     
       
         newActionCreatorCall.should.throw(Error, 'The action definition must have a value for type');
       });
       it('should fail if the action definition object type value is not a string', ()=> {
-        const { newActionCreator } = usingDucks('test');
+        const { newActionCreator } = usingDucks();
         function newActionCreatorCall() { {newActionCreator({ type: { } })}; }     
       
         newActionCreatorCall.should.throw(Error, 'The action definition type must be a string');
       });
 
       it('should return an action with the specified type', ()=> {
-        const actionCreator = usingDucks('test').newActionCreator({ type: 'LOGIN' });
+        const actionCreator = usingDucks().newActionCreator({ type: 'LOGIN' });
         const action = actionCreator();
         
         should.exist(action);
         action.should.have.property('type', 'LOGIN');
       });
       it('should return an action that has a payload property with the value of the first argument of the actionCreator', ()=> {
-        const actionCreator = usingDucks('test').newActionCreator({ type: 'LOGIN' });
+        const actionCreator = usingDucks().newActionCreator({ type: 'LOGIN' });
 
         const action = actionCreator('payload value');
         
@@ -71,7 +65,7 @@ describe('when usingDucks', ()=> {
 
     describe('when providing a reducer function in the options argument', ()=> {
       it('should ignore the reducer if not provided', ()=> {
-        usingDucks('test').newActionCreator({ type: 'LOGIN',
+        usingDucks().newActionCreator({ type: 'LOGIN',
           reducer: null,
         });        
       });
@@ -81,14 +75,14 @@ describe('when usingDucks', ()=> {
 
     describe('createReducer', ()=> {
       it('should return a function', ()=> {
-        const reducer = usingDucks('test').createReducer();
+        const reducer = usingDucks().createReducer();
         should.exist(reducer);
       });
       
       describe('the reducer function created by createReducer', ()=> {
         const initialState = { initialStateField: 'initialValue' };
         it('should return the same state when no actions match', ()=> {
-          const { newActionCreator, createReducer } = usingDucks('test');
+          const { newActionCreator, createReducer } = usingDucks();
           const loginAction = newActionCreator({ type: 'LOGIN' });
           const reducer = createReducer();
           
@@ -99,7 +93,7 @@ describe('when usingDucks', ()=> {
           newState.should.equal(state);
         });
         it('should return the initialState when no state is provided', ()=> {
-          const { createReducer } = usingDucks('test', initialState);
+          const { createReducer } = usingDucks(initialState);
           const reducer = createReducer();
           
           const newState = reducer();
@@ -108,7 +102,7 @@ describe('when usingDucks', ()=> {
           newState.should.deep.equal(initialState);
         });
         it('should use the reducer function from options parameter when the action type is dispatched', ()=> {
-          const { newActionCreator, createReducer } = usingDucks('test');
+          const { newActionCreator, createReducer } = usingDucks();
           const actionCreator = newActionCreator({ type: 'LOGIN',
             reducer: (state, payload)=> ({...state, username: payload }),
           });
@@ -123,7 +117,7 @@ describe('when usingDucks', ()=> {
           newState.should.have.property('username', 'actionPayload');
         });
         it('should use the successReducer function from options parameter when the _SUCCESS action type is dispatched', ()=> {
-          const { newActionCreator, createReducer } = usingDucks('test');
+          const { newActionCreator, createReducer } = usingDucks();
           const loginActionCreator = newActionCreator({ type: 'LOGIN',
             successReducer: (state, payload)=> ({...state, username: payload }),
           });
@@ -138,7 +132,7 @@ describe('when usingDucks', ()=> {
           newState.should.have.property('username', 'actionPayload');
         });
         it('should use the failureReducer function from options parameter when the _FAILURE action type is dispatched', ()=> {
-          const { newActionCreator, createReducer } = usingDucks('test');
+          const { newActionCreator, createReducer } = usingDucks();
           const loginActionCreator = newActionCreator({ type: 'LOGIN',
             failureReducer: (state, payload, error)=> ({...state, login_failed: true, error }),
           });
@@ -154,7 +148,7 @@ describe('when usingDucks', ()=> {
           newState.should.have.property('error');
         });
         it('should not handle actions that were not created or configured for the duck', ()=> {
-          const { newActionCreator, createReducer } = usingDucks('test');
+          const { newActionCreator, createReducer } = usingDucks();
           newActionCreator({ type: 'LOGIN',
             reducer: (state, payload)=> ({...state, username: payload }),
           });
@@ -165,7 +159,7 @@ describe('when usingDucks', ()=> {
           newState.should.deep.equal(state);
         });      
         it('should throw an error if the provided reducer does not return a state object', ()=> {
-          const { newActionCreator, createReducer } = usingDucks('test');
+          const { newActionCreator, createReducer } = usingDucks();
           const actionCreator = newActionCreator({ type: 'LOGIN', reducer: (state, payload)=> { } });
           const action = actionCreator('actionPayload');
           const reducer = createReducer();
@@ -178,7 +172,7 @@ describe('when usingDucks', ()=> {
       
       describe('when tracking the async call', ()=> {
         describe('with a field name', ()=> {
-          const { newActionCreator, createReducer } = usingDucks('test');
+          const { newActionCreator, createReducer } = usingDucks();
           const actionCreator = newActionCreator({ type: 'LOGIN', 
             trackWith: 'isLoggingIn', 
           });
@@ -208,7 +202,7 @@ describe('when usingDucks', ()=> {
           });
         });
         describe('with a function', ()=> {
-          const { newActionCreator, createReducer } = usingDucks('test');
+          const { newActionCreator, createReducer } = usingDucks();
           const actionCreator = newActionCreator({ type: 'LOGIN', 
             trackWith: (state, payload, isRunning)=> ({...state, isRunning }),
           });
