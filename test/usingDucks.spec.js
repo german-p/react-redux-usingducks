@@ -5,7 +5,6 @@ const should = chai.should();
 const { success, failure } = require('../src/asyncAction');
 
 describe('when usingDucks', ()=> {
-  
   it('should return an object with the newActionCreator', ()=> {
     const { newActionCreator } = usingDucks();
     should.exist(newActionCreator);
@@ -16,6 +15,11 @@ describe('when usingDucks', ()=> {
     const { createReducer } = usingDucks();
     should.exist(createReducer);
     createReducer.should.be.a('function');
+  });
+
+  it('should fail if providing a namespace that is not a string', ()=> {
+    function usingDucksCall() { usingDucks(null, {}); }
+    usingDucksCall.should.throw(Error, 'The namespace must be a string');
   });
 
   describe('newActionCreator', ()=> {
@@ -53,6 +57,15 @@ describe('when usingDucks', ()=> {
         should.exist(action);
         action.should.have.property('type', 'LOGIN');
       });
+
+      it('should return an action prefixed with the namespace provided in usingDucks', ()=> {
+        const actionCreator = usingDucks(null, 'namespace').newActionCreator({ type: 'LOGIN' });
+        const action = actionCreator();
+        
+        should.exist(action);
+        action.should.have.property('type', '[namespace] LOGIN');
+      });
+      
       it('should return an action that has a payload property with the value of the first argument of the actionCreator', ()=> {
         const actionCreator = usingDucks().newActionCreator({ type: 'LOGIN' });
 
@@ -61,15 +74,6 @@ describe('when usingDucks', ()=> {
         should.exist(action);
         action.should.have.property('payload', 'payload value');
       });
-    });
-
-    describe('when providing a reducer function in the options argument', ()=> {
-      it('should ignore the reducer if not provided', ()=> {
-        usingDucks().newActionCreator({ type: 'LOGIN',
-          reducer: null,
-        });        
-      });
-
     });
 
 

@@ -1,8 +1,9 @@
 const { success, failure } = require('./asyncAction');
 
-function usingDucks(initialState = {}) {
+function usingDucks(initialState = {}, namespace) {
   const config = {};
   let _initialState = initialState;
+  if(namespace && typeof namespace !== 'string') throw new Error('The namespace must be a string');
   /**
    * Creates an action creator and register the reducers that will handle the action.
    * @param {object} definition The object with the action definition parameters
@@ -18,12 +19,13 @@ function usingDucks(initialState = {}) {
     if(!definition.type) throw new Error('The action definition must have a value for type');
     if(typeof definition.type !== 'string') throw new Error('The action definition type must be a string');
     const { type, reducer, successReducer, failureReducer, trackWith} = definition;
-
-    reduce(type, composeTrackWith(reducer, type, trackWith, true));
-    reduce(success(type), composeTrackWith(successReducer, type, trackWith, false));
-    reduce(failure(type), composeTrackWith(failureReducer, type, trackWith, false));
     
-    return (payload)=> ({ type, payload });
+    const actionType = namespace ? `[${namespace}] ${type}` : type;
+    reduce(actionType, composeTrackWith(reducer, actionType, trackWith, true));
+    reduce(success(actionType), composeTrackWith(successReducer, actionType, trackWith, false));
+    reduce(failure(actionType), composeTrackWith(failureReducer, actionType, trackWith, false));
+    
+    return (payload)=> ({ type: actionType, payload });
   }
 
   /**
