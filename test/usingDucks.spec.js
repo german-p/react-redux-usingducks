@@ -249,7 +249,60 @@ describe('when usingDucks', ()=> {
 
   });
 
-  
+  describe('when reducing external actions', ()=> {
+
+    it('should throw an error if the first parameter is not a string or a function', ()=> {
+      const { reduce } = usingDucks();
+      function reduceCall() { reduce({}, (state)=> {}); }
+
+      reduceCall.should.throw(Error, 'actionType parameter must be a string or a function');
+    });
+    it('should throw an error if the first parameter is null', ()=> {
+      const { reduce } = usingDucks();
+      function reduceCall() { reduce(null, (state)=> {}); }
+
+      reduceCall.should.throw(Error, 'actionType parameter must be a string or a function');
+    });
+
+    describe('using a string action type', ()=>{
+      it('should reduce the action when is dispatched', ()=> {
+        const { createReducer, reduce } = usingDucks();
+
+        reduce('EXTERNAL_ACTION', (state)=> ({...state, extAction: true }));
+        const reducer = createReducer();
+        const newState = reducer({}, { type: 'EXTERNAL_ACTION' });
+        
+        newState.should.have.property('extAction', true);
+      });
+
+      it('should throw an error if the action type is already being reduced', ()=> {
+        const { createReducer, reduce } = usingDucks({}, 'namespace');
+        reduce('EXTERNAL_ACTION', (state)=> {});
+        function repeatedReduceCall() { reduce('EXTERNAL_ACTION', (state)=> {}); }
+
+        repeatedReduceCall.should.throw(Error, 'EXTERNAL_ACTION is already being reduced by this [namespace] duck. Unify your reducer code in the action definition reducer');
+        
+      });
+      
+      it('should throw an error if the reducer function is not provided', ()=> {
+        const { reduce } = usingDucks();
+        function reduceCall() { reduce('EXTERNAL_ACTION'); }
+        reduceCall.should.throw(Error, 'The reducer function argument for EXTERNAL_ACTION reduce is required');
+      });
+    });
+    describe('using a function', ()=>{
+      it('should reduce the action if the function provided returns true', ()=> {
+        const { createReducer, reduce } = usingDucks();
+
+        reduce(action=> action.type.startsWith('EXTERNAL'), (state)=> ({...state, extAction: true }));
+        const reducer = createReducer();
+        const newState = reducer({}, { type: 'EXTERNAL_ACTION' });
+        
+        newState.should.have.property('extAction', true);
+      });
+    });
+
+  });
   
 
 });
