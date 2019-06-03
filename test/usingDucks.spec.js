@@ -1,10 +1,10 @@
 
 const chai = require('chai');
-const { usingDucks } = require('../src/usingDucks');
+const usingDucks = require('../src/usingDucks');
 const should = chai.should();
 const { success, failure } = require('../src/asyncAction');
 
-describe('when usingDucks', ()=> {
+describe('usingDucks', ()=> {
   it('should return an object with the makeActionCreator', ()=> {
     const { makeActionCreator } = usingDucks();
     should.exist(makeActionCreator);
