@@ -4,14 +4,15 @@
   "description": "A small function to create redux ducks",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "eslint ./src"
   },
   "keywords": [
     "react",
     "redux",
     "ducks"
   ],
-  "author": "German Paniagua <ggpaniagua@gmail.com>",
+  "author": "Germán Paniagua <ggpaniagua@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "chai": "^4.2.0",
@@ -23,5 +24,7 @@
     "sinon": "^7.3.2",
     "sinon-chai": "^3.3.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "react-redux-async-action": "^1.0.1"
+  }
 }
