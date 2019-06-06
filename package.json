@@ -5,6 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
+    "prebuild": "npm run build:clean",
+    "build:clean": "rimraf ./dist",
+    "build": "rollup -c",
     "lint": "eslint ./src",
     "coverage": "nyc --reporter=text mocha",
     "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls"
@@ -17,6 +20,8 @@
   "author": "Germán Paniagua <ggpaniagua@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "coveralls": "^3.0.4",
@@ -27,6 +32,8 @@
     "mocha-lcov-reporter": "^1.3.0",
     "nyc": "^14.1.1",
     "rimraf": "^2.6.3",
+    "rollup": "^1.14.3",
+    "rollup-plugin-babel": "^4.3.2",
     "sinon": "^7.3.2",
     "sinon-chai": "^3.3.0"
   },
