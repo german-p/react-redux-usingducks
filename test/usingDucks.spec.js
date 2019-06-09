@@ -181,12 +181,18 @@ describe('usingDucks', () => {
 
       describe('when tracking the async call', () => {
         describe('with a field name', () => {
-          const { makeActionCreator, createReducer } = usingDucks();
-          const actionCreator = makeActionCreator({
-            type: 'LOGIN',
-            trackWith: 'isLoggingIn',
+          let reducer; let makeActionCreator; let createReducer; let
+            actionCreator;
+          beforeEach(() => {
+            const duck = usingDucks();
+            makeActionCreator = duck.makeActionCreator;
+            createReducer = duck.createReducer;
+            actionCreator = makeActionCreator({
+              type: 'LOGIN',
+              trackWith: 'isLoggingIn',
+            });
+            reducer = createReducer();
           });
-          const reducer = createReducer();
           it('should default the state to false', () => {
             const state = reducer();
             should.exist(state);
@@ -210,46 +216,130 @@ describe('usingDucks', () => {
             should.exist(state);
             state.should.have.property('isLoggingIn', false);
           });
+
+          it('should add the field and reduce the provided reducer', () => {
+            const fetchDataCreator = makeActionCreator({
+              type: 'FETCH_DATA',
+              reducer: state => ({ ...state, reducerCalled: true }),
+              trackWith: 'isFetching',
+            });
+            const state = reducer({}, fetchDataCreator());
+
+            should.exist(state);
+            state.should.have.property('isFetching', true);
+            state.should.have.property('reducerCalled', true);
+          });
+
+          it('should add the field and reduce the provided successReducer', () => {
+            const fetchDataCreator = makeActionCreator({
+              type: 'FETCH_DATA',
+              successReducer: state => ({ ...state, reducerCalled: true }),
+              trackWith: 'isFetching',
+            });
+            const state = reducer({}, success(fetchDataCreator()));
+
+            should.exist(state);
+            state.should.have.property('isFetching', false);
+            state.should.have.property('reducerCalled', true);
+          });
+          it('should add the field and reduce the provided failureReducer', () => {
+            const fetchDataCreator = makeActionCreator({
+              type: 'FETCH_DATA',
+              failureReducer: state => ({ ...state, reducerCalled: true }),
+              trackWith: 'isFetching',
+            });
+            const state = reducer({}, failure(fetchDataCreator()));
+
+            should.exist(state);
+            state.should.have.property('isFetching', false);
+            state.should.have.property('reducerCalled', true);
+          });
         });
         describe('with a function', () => {
-          const { makeActionCreator, createReducer } = usingDucks();
-          const actionCreator = makeActionCreator({
-            type: 'LOGIN',
-            trackWith: (state, payload, isRunning) => ({ ...state, isRunning }),
+          let ctx;
+          beforeEach(() => {
+            const duck = usingDucks();
+            ctx = {
+              makeActionCreator: duck.makeActionCreator,
+              createReducer: duck.createReducer,
+              actionCreator: duck.makeActionCreator({
+                type: 'LOGIN',
+                trackWith: (state, payload, isRunning) => ({ ...state, isRunning }),
+              }),
+              reducer: duck.createReducer(),
+            };
           });
-          const reducer = createReducer();
+
           it('should default the state to false', () => {
-            const state = reducer();
+            const state = ctx.reducer();
             should.exist(state);
             state.should.have.property('isRunning', false);
           });
           it('should throw an error if trackWith function returns no state', () => {
-            const faultyAction = makeActionCreator({
+            const faultyAction = ctx.makeActionCreator({
               type: 'LOGOUT',
               trackWith: (state, payload, isRunning) => {}, // eslint-disable-line no-unused-vars
             });
             function reduceCall() {
-              reducer({}, faultyAction());
+              ctx.reducer({}, faultyAction());
             }
             reduceCall.should.throw(Error, 'trackWith function of the LOGOUT action should return a state object');
           });
           it('should use the function to reduce the state providing the true value when the action is reduced', () => {
-            const state = reducer({}, actionCreator());
+            const state = ctx.reducer({}, ctx.actionCreator());
 
             should.exist(state);
             state.should.have.property('isRunning', true);
           });
           it('should use the function to reduce the state providing the false value when the _SUCCESS action is reduced', () => {
-            const state = reducer({}, success(actionCreator()));
+            const state = ctx.reducer({}, success(ctx.actionCreator()));
 
             should.exist(state);
             state.should.have.property('isRunning', false);
           });
           it('should use the function to reduce the state providing the false value when the _FAILURE action is reduced', () => {
-            const state = reducer({}, failure(actionCreator(), new Error('')));
+            const state = ctx.reducer({}, failure(ctx.actionCreator(), new Error('')));
 
             should.exist(state);
             state.should.have.property('isRunning', false);
+          });
+
+          it('should add the field and reduce the provided reducer', () => {
+            const fetchDataCreator = ctx.makeActionCreator({
+              type: 'FETCH_DATA',
+              reducer: state => ({ ...state, reducerCalled: true }),
+              trackWith: (state, payload, isFetching) => ({ ...state, isFetching }),
+            });
+            const state = ctx.reducer({}, fetchDataCreator());
+
+            should.exist(state);
+            state.should.have.property('isFetching', true);
+            state.should.have.property('reducerCalled', true);
+          });
+
+          it('should add the field and reduce the provided successReducer', () => {
+            const fetchDataCreator = ctx.makeActionCreator({
+              type: 'FETCH_DATA',
+              successReducer: state => ({ ...state, reducerCalled: true }),
+              trackWith: (state, payload, isFetching) => ({ ...state, isFetching }),
+            });
+            const state = ctx.reducer({}, success(fetchDataCreator()));
+
+            should.exist(state);
+            state.should.have.property('isFetching', false);
+            state.should.have.property('reducerCalled', true);
+          });
+          it('should add the field and reduce the provided failureReducer', () => {
+            const fetchDataCreator = ctx.makeActionCreator({
+              type: 'FETCH_DATA',
+              failureReducer: state => ({ ...state, reducerCalled: true }),
+              trackWith: (state, payload, isFetching) => ({ ...state, isFetching }),
+            });
+            const state = ctx.reducer({}, failure(fetchDataCreator()));
+
+            should.exist(state);
+            state.should.have.property('isFetching', false);
+            state.should.have.property('reducerCalled', true);
           });
         });
       });
@@ -304,6 +394,17 @@ describe('usingDucks', () => {
         const newState = reducer({}, { type: 'EXTERNAL_ACTION' });
 
         newState.should.have.property('extAction', true);
+      });
+
+      it('should return the same state if no reducers match the condition', () => {
+        const { createReducer, reduce } = usingDucks();
+
+        reduce(action => action.type.startsWith('EXTERNAL'), state => ({ ...state, extAction: true }));
+        const reducer = createReducer();
+        const state = {};
+        const newState = reducer(state, { type: 'LOGIN' });
+
+        newState.should.equal(state);
       });
     });
   });

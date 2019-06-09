@@ -31,7 +31,9 @@ function usingDucks(initialState = {}, namespace) {
       } else {
         nextState = ({ ...state, [trackWith]: isRunning });
       }
-      if (reducer) return reducer(nextState);
+      if (reducer) {
+        return reducer(nextState);
+      }
       return nextState;
     };
   }
@@ -49,7 +51,7 @@ function usingDucks(initialState = {}, namespace) {
     if (typeof actionType === 'string') {
       if (config[actionType]) { throw new Error(`${actionType} is already being reduced by this${ns} duck. Unify your reducer code in the action definition reducer`); }
       if (!reducerFn) { throw new Error(`The reducer function argument for ${actionType} reduce is required`); }
-      if (reducerFn) { config[actionType] = reducerFn; }
+      config[actionType] = reducerFn;
     } else if (typeof actionType === 'function') {
       conditionalReducers.push({ actionCondition: actionType, reducer: reducerFn });
     } else {
