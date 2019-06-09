@@ -22,7 +22,7 @@ function usingDucks(initialState = {}, namespace) {
     if (!trackWithIsAFunction) duckInitialState = { ...initialState, [trackWith]: false };
     else duckInitialState = trackWith(initialState, undefined, false);
 
-    return (state, payload) => {
+    return (state, payload, error) => {
       let nextState = state;
 
       if (trackWithIsAFunction) {
@@ -32,7 +32,7 @@ function usingDucks(initialState = {}, namespace) {
         nextState = ({ ...state, [trackWith]: isRunning });
       }
       if (reducer) {
-        return reducer(nextState);
+        return reducer(nextState, payload, error);
       }
       return nextState;
     };
@@ -97,7 +97,7 @@ function usingDucks(initialState = {}, namespace) {
       let newState = state;
       if (action && action.type) {
         if (config[action.type]) {
-          newState = config[action.type](state, action.payload/* , action.error */);
+          newState = config[action.type](state, action.payload, action.error);
           if (!newState) throw new Error(`The reducer of the ${action.type} action does not return a state object`);
         }
         return conditionalReducers.reduce((currState, conditional) => {
