@@ -1,6 +1,6 @@
 {
   "name": "react-redux-usingducks",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "An action centric approach to redux-ducks",
   "main": "dist/index.js",
   "module": "dist/index.js",
