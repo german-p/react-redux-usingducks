@@ -2,6 +2,7 @@
 ### __An action centric approach to redux-ducks__
 
 [![Build Status](https://img.shields.io/travis/german-p/react-redux-usingducks.svg)](https://travis-ci.org/german-p/react-redux-usingducks) 
+[![Coverage Status](https://coveralls.io/repos/github/german-p/react-redux-usingducks/badge.svg?branch=master)](https://coveralls.io/github/german-p/react-redux-usingducks?branch=master)
 
 _If you are unfamiliar to what a ducks is, please refer to the specs here: https://github.com/erikras/ducks-modular-redux_
 
