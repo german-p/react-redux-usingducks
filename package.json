@@ -1,8 +1,9 @@
 {
   "name": "react-redux-usingducks",
   "version": "0.0.1",
-  "description": "A small function to create redux ducks",
-  "main": "index.js",
+  "description": "An action centric approach to redux-ducks",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "scripts": {
     "test": "mocha",
     "prebuild": "npm run build:clean",
@@ -10,7 +11,8 @@
     "build": "rollup -c",
     "lint": "eslint ./src",
     "coverage": "nyc --reporter=text mocha",
-    "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls"
+    "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
+    "prepublish": "npm run lint && npm run test && npm run build"
   },
   "keywords": [
     "react",
