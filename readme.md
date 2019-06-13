@@ -1,6 +1,8 @@
 # react-redux-usingducks
 ### __An action centric approach to redux-ducks__
 
+[![Build Status](https://img.shields.io/travis/german-p/react-redux-usingducks.svg)](https://travis-ci.org/german-p/react-redux-usingducks) 
+
 _If you are unfamiliar to what a ducks is, please refer to the specs here: https://github.com/erikras/ducks-modular-redux_
 
 >This implementation is using [react-redux-async-action](https://www.npmjs.com/package/react-redux-async-action) so it uses the _FAILURE and _SUCCESS action suffix convention. See that package readme for more info.
