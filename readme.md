@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/german-p/react-redux-usingducks/badge.svg?branch=master)](https://coveralls.io/github/german-p/react-redux-usingducks?branch=master)
 [![npm](https://img.shields.io/npm/v/react-redux-usingducks.svg)](https://www.npmjs.com/package/react-redux-usingducks)
 ![NPM](https://img.shields.io/npm/l/react-redux-usingducks.svg?style=popout)
-
+[![Known Vulnerabilities](https://snyk.io/test/github/german-p/react-redux-usingducks/badge.svg?targetFile=package.json)](https://snyk.io/test/github/german-p/react-redux-usingducks?targetFile=package.json)
 
 _If you are unfamiliar to what a ducks is, please refer to the specs here: https://github.com/erikras/ducks-modular-redux_
 
