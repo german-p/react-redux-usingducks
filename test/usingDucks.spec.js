@@ -348,6 +348,59 @@ describe('usingDucks', () => {
           });
         });
       });
+
+      describe('when providing child reducers', () => {
+        it('should use the reducer function from options parameter when the action type is dispatched', () => {
+          const { createReducer } = usingDucks();
+          const childDuck = usingDucks();
+
+          const childActionCreator = childDuck.makeActionCreator({
+            type: 'LOGIN',
+            reducer: (state, payload) => ({ ...state, username: payload }),
+          });
+
+          const childAction = childActionCreator('actionPayload');
+          const state = {
+            initialValue: 42,
+          };
+
+          const reducer = createReducer({ childDuckReducer: childDuck.createReducer() });
+
+          const newState = reducer(state, childAction);
+
+          should.exist(newState);
+          newState.should.not.equal(state);
+          newState.should.have.property('initialValue', 42);
+          newState.should.have.property('childDuckReducer');
+          newState.childDuckReducer.should.have.property('username', 'actionPayload');
+        });
+        it('should throw an error if childReducer contains items that are not functions', () => {
+          const { createReducer } = usingDucks();
+          const childDuck = usingDucks();
+
+          const childActionCreator = childDuck.makeActionCreator({
+            type: 'LOGIN',
+            reducer: (state, payload) => ({ ...state, username: payload }),
+          });
+
+          const childAction = childActionCreator('actionPayload');
+          const state = {
+            initialValue: 42,
+          };
+
+          // const reducer = createReducer({ childDuckReducer: 'NOT A FUNCTION' });
+          should.throw(() => createReducer({ childDuckReducer: 'NOT A FUNCTION' }), Error, 'childReducers.childDuckReducer is not a function');
+
+
+          // const newState = reducer(state, childAction);
+
+          // should.exist(newState);
+          // newState.should.not.equal(state);
+          // newState.should.have.property('initialValue', 42);
+          // newState.should.have.property('childDuckReducer');
+          // newState.childDuckReducer.should.have.property('username', 'actionPayload');
+        });
+      });
     });
   });
 
@@ -390,6 +443,7 @@ describe('usingDucks', () => {
         reduceCall.should.throw(Error, 'The reducer function argument for EXTERNAL_ACTION reduce is required');
       });
     });
+
     describe('using a function', () => {
       it('should reduce the action if the function provided returns true', () => {
         const { createReducer, reduce } = usingDucks();

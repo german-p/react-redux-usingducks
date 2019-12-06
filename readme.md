@@ -285,8 +285,16 @@ I have not tested [Immutable.JS](https://www.npmjs.com/package/immutable) with t
 ```js
 const reducer = createReducer();
 ```
+parameter|type|required|description|example|
+|---------|----|--------|-----------|-------|
+|childReducers|```object```|no|An object with other reducers to combine with this one, same as in redux's combineReducers function|```{ fooReducer: (state, action)=> state, barReducer: (state, action) => state }```
+
+> WARNING: When combining child reducers like this, be careful not to use the same property names as your childReducer names (e.g. fooReducer or barReducer in the above example) when reducing actions from the parent reducer as those properties will be overwritten
+
 #### Returns
   The reducer function for the ducks
+
+
 
 # reduce
 >Registers a reducer to execute when a specified action or an action matching certain criteria is dispatched.  

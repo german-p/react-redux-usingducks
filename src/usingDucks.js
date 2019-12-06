@@ -92,16 +92,35 @@ function usingDucks(initialState = {}, namespace) {
 
   /**
    * Creates the main reducer function for the actions of the duck
+   * @param {object} childReducers The object containing the reducer functions to be combined with this reducer
    * @returns {function} the reducer function (state, action)=> state;
    */
-  function createReducer() {
+  function createReducer(childReducers) {
+    if (childReducers) {
+      Object.keys(childReducers).forEach((key) => {
+        if (typeof childReducers[key] !== 'function') throw new Error(`childReducers.${key} is not a function`);
+      });
+    }
     return (state = duckInitialState, action) => {
       let newState = state;
       if (action && action.type) {
+        // if any action matches
         if (config[action.type]) {
           newState = config[action.type](state, action.payload, action.error);
           if (!newState) throw new Error(`The reducer of the ${action.type} action does not return a state object`);
         }
+        // child reducers
+        if (childReducers) {
+          const childState = Object.keys(childReducers).reduce(
+            (nextState, key) => {
+              nextState[key] = childReducers[key](newState[key], action);
+              return nextState;
+            },
+            {},
+          );
+          newState = { ...newState, ...childState };
+        }
+
         return conditionalReducers.reduce((currState, conditional) => {
           if (conditional.actionCondition(action) === true) {
             return conditional.reducer(currState);
