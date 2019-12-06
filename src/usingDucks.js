@@ -113,7 +113,7 @@ function usingDucks(initialState = {}, namespace) {
         if (childReducers) {
           const childState = Object.keys(childReducers).reduce(
             (nextState, key) => {
-              nextState[key] = childReducers[key](newState[key], action);
+              nextState[key] = childReducers[key](newState[key], action); // eslint-disable-line no-param-reassign
               return nextState;
             },
             {},
