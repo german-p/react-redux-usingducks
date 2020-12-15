@@ -1,7 +1,7 @@
 
-const chai = require('chai');
-const { success, failure } = require('react-redux-async-action');
-const usingDucks = require('../src/usingDucks');
+import { success, failure } from 'react-redux-async-action';
+import chai from 'chai';
+import usingDucks from '../src/usingDucks';
 
 const should = chai.should();
 

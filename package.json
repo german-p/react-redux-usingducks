@@ -1,18 +1,18 @@
 {
   "name": "react-redux-usingducks",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "An action centric approach to redux-ducks",
   "main": "dist/index.js",
-  "module": "dist/index.js",
+  "module": "dist/index.es.js",
   "scripts": {
-    "test": "mocha",
-    "prebuild": "npm run build:clean",
+    "test": "mocha --require @babel/register",
+    "prebuild": "yarn build:clean",
     "build:clean": "rimraf ./dist",
     "build": "rollup -c",
     "lint": "eslint ./src",
-    "coverage": "nyc --reporter=text mocha",
-    "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
-    "prepublish": "npm run lint && npm run test && npm run build"
+    "coverage": "nyc --require @babel/register --reporter=text mocha",
+    "coveralls": "nyc yarn test && nyc report --reporter=text-lcov | coveralls",
+    "prepare": "yarn lint && yarn test && yarn build"
   },
   "keywords": [
     "react",
@@ -24,6 +24,7 @@
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
+    "@babel/register": "^7.12.10",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "coveralls": "^3.0.4",

@@ -1,4 +1,4 @@
-const { success, failure } = require('react-redux-async-action');
+import { success, failure } from 'react-redux-async-action';
 
 /**
  * Defines a logical grouping of actions with their reducer logic in one place.
@@ -135,4 +135,4 @@ function usingDucks(initialState = {}, namespace) {
   return { makeActionCreator, createReducer, reduce };
 }
 
-module.exports = usingDucks;
+export default usingDucks;
